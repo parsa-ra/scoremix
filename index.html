@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="ScoreMix: Synthetic Data Generation by Score Composition in Diffusion Models Improves Recognition">
+  <meta property="og:title" content="ScoreMix"/>
+  <meta property="og:description" content="ScoreMix leverages convex score mixing in diffusion models to boost discriminative recognition performance without external data."/>
+  <meta property="og:url" content="https://parsa-ra.github.io/scoremix"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/images/scoremix_teaser.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="ScoreMix">
+  <meta name="twitter:description" content="ScoreMix leverages convex score mixing in diffusion models to boost discriminative recognition performance without external data.">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="Synthetic Data, Diffusion Models, Score Mixing, Data Augmentation, Face Recognition, Generative Models, Machine Learning, Recognition">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>ScoreMix</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.svg">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">ScoreMix:</h1>
+            <h2 class="title is-2 publication-title">Synthetic Data Generation by Score Composition in Diffusion Models Improves Recognition</h2>
+
+            <div class="column has-text-centered">
+              <h4 class="title is-4 publication-title"> Arxiv 2025 </h4>
+            </div>
+  
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://parsa-ra.github.io">Parsa Rahimi</a><sup>1,2</sup>,</span>
+              <span class="author-block">
+                <a href="https://www.idiap.ch/~marcel/professional/Welcome.html">Sébastien Marcel</a><sup>1,2</sup>
+              </span>
+            </div>
+
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>EPFL,</span>
+              <span class="author-block"><sup>2</sup>Idiap</span>
+            </div>
+
+  
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="./static/scoremix.pdf"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper (PDF)</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                    <a href="https://arxiv.org/abs/2506.10226"
+                     class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>ArXiv</span>
+                    </a>
+                  </span>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <span class="button is-normal is-rounded is-light is-static" aria-disabled="true">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (coming soon)</span>
+                  </span>
+                </span>
+                <span class="link-block">
+                  <span class="button is-normal is-rounded is-light is-static" aria-disabled="true">
+                    <span class="icon">
+                        <i class="far fa-images"></i>
+                    </span>
+                    <span>Dataset (coming soon)</span>
+                  </span>
+                </span>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+  
+        <img src="./static/images/scoremix_teaser.png" alt="ScoreMix overview illustration highlighting score composition in diffusion models">
+        </img>
+
+        <h2 class="subtitle has-text-centered">
+          <span class="dnerf">ScoreMix</span> composes class-conditioned diffusion scores to synthesize challenging augmentations that strengthen discriminators while relying on a single source dataset.
+        </h2>
+  
+  
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Synthetic data generation is increasingly used for training and data augmentation, yet existing strategies often rely on external foundation models or auxiliary datasets that are impractical because of license, privacy, or domain-mismatch constraints. We introduce <b>ScoreMix</b>, a self-contained augmentation method that leverages the score composition phenomenon in diffusion models to produce hard samples for recognition tasks.
+            </p>
+            <p>
+              ScoreMix mixes class-conditioned diffusion scores during the reverse process, creating domain-specific augmentations without accessing any external data. We systematically study how to select source classes and show that mixing identities that are far apart in the discriminator’s embedding space yields the largest gains&mdash;providing up to <b>3% additional improvement</b> over proximity-based selection. Across <b>eight</b> public face recognition benchmarks, ScoreMix improves accuracy by up to <b>7 percentage points</b> without hyperparameter search, surpassing both training on real data alone and architectural scaling baselines. Code and synthetic datasets will be released.
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+  
+  
+    </div>
+  </section>
+  
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+
+        
+        <div style="max-width: 800px; width: 100%; background-color: white; padding: 24px; border-radius: 12px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);">
+          <h2 class="title is-3">ScoreMix in a Nutshell</h2>
+
+          <p class="content has-text-justified" style="margin-bottom: 1.2rem;">
+            ScoreMix was born from a simple puzzle: can we strengthen discriminators without calling in external data or proprietary generators? The story below shows how mixing diffusion scores became the answer.
+          </p>
+
+          <div style="background-color: #fff8dc; border-left: 5px solid #ffcc00; padding: 15px; margin-bottom: 20px; font-weight: bold; font-size: 1.05em; text-align: left; border-radius: 10px;">
+              <strong>Hypothesis.</strong> Convexly mixing class-conditioned diffusion scores can generate synthetic samples that meaningfully boost a downstream discriminator while using only the original training dataset.
+          </div>
+
+          <div class="content has-text-justified">
+            <p>
+              We begin by training a diffusion generator and a face-recognition discriminator solely on WebFace160K. With both models anchored to the same dataset, we can explore what happens when the generator’s score functions are blended.
+            </p>
+            <p>
+              ScoreMix pairs identities that live far apart in the discriminator’s embedding space and composes their class-conditioned diffusion scores with a convex combination—typically an even split. Guided by this mixed score, the generator paints new faces that stay on-manifold yet deviate just enough to challenge the discriminator.
+            </p>
+            <p>
+              Those mixed samples go back into the training loop alongside the original images. Across eight public FR benchmarks, this recipe yields up to <span style="font-weight: bold; color: #d9534f;">7 percentage points</span> verification gain—beating both AugGen and a larger IR101 model trained purely on real data. Selecting distant identities is crucial: it grants an extra <span style="font-weight: bold; color: #d9534f;">3% average boost</span> compared with proximity-based choices.
+            </p>
+            <p>
+              Finally, we investigated <em>why</em> the strategy works. The generator’s condition space and the discriminator’s embedding space share only loose alignment, explaining why naive condition-space heuristics underperform. Embedding-aware selection is what turns score mixing into ScoreMix.
+            </p>
+          </div>
+  
+      </div>
+
+      </div>
+  
+    </div>
+  </section>
+  
+
+
+
+  <section class="hero is-small is-light">
+    <div class="container is-max-desktop ">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+
+          <br></br>
+          <h2 class="title is-3">Motivation</h2>
+          <img src="./static/images/scoremix_sample_pair.png" alt="ScoreMix augmentations composed from two source identities">
+          </img>
+          <div class="content has-text-justified">
+            Before mixing scores, we confronted the reality that most synthetic augmentation pipelines lean on powerful foundation models (e.g., Stable Diffusion, FLUX) or auxiliary datasets harvested at scale. These options often clash with privacy rules, licensing restrictions, or domain-specific deployments. ScoreMix asks a stricter question: can we boost discriminators using only the dataset already in hand? By training both the diffusion generator and the recognition model on the same data, ScoreMix avoids information leakage while still producing diverse, challenging samples.
+         </div>
+         <br></br>
+         
+        </div>
+      </div>
+    </div>
+  </section>
+          
+
+ <section class="section is-small is-light">
+    <div class="container is-max-desktop ">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Method: Generating Synthetic Mixes</h2>
+          <img src="./static/images/scoremix_mixing_grid.png" alt="Grid showing ScoreMix images produced by sweeping convex score mixing coefficients">
+          </img>
+          <div class="content has-text-justified">
+            <p>
+              Once the motivation was set, the recipe emerged as a series of deliberate steps that keep the pipeline self-contained while extracting the most out of diffusion scores.
+            </p>
+            <ul>
+                <li>Train a face recognition discriminator (IR50/IR101) and a class-conditional diffusion model on the same labeled dataset, ensuring a self-contained setup.</li>
+                <li>Measure pairwise distances between class centers in the discriminator’s embedding space and select identities that are far apart to mix.</li>
+                <li>During reverse diffusion, compose the two class-conditioned scores with a convex combination (typically lambda = 0.5), preserving magnitude and on-manifold guidance.</li>
+                <li>Sample with EDM2’s deterministic second-order solver and light autoguidance to obtain high-fidelity ScoreMix augmentations.</li>
+                <li>Merge the synthetic ScoreMix data with the original dataset and continue training the discriminator, achieving sizeable gains without external data.</li>
+            </ul>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section is-small">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Key Takeaways</h2>
+      <p class="subtitle has-text-centered" style="max-width: 780px; margin: 0 auto 1.75rem;">
+      </p>
+
+      <div class="box" style="margin-bottom: 1.5rem; border-left: 4px solid #3273dc; background-color: #f5f9ff;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 1 — Self-contained augmentation pays off</p>
+            <p class="content">
+              ScoreMix relies solely on the data used to train the generator and discriminator, yet it outperforms both the real-only baselines and a larger IR101 backbone. This validates that a fully self-contained pipeline can still produce SOTA recognition gains.
+            </p>
+          </div>
+          <div class="column is-6">
+            <table class="table is-striped is-narrow is-fullwidth" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>IJB-C @1e-6</th>
+                  <th>TinyFace R1</th>
+                  <th>Avg-H</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>WebFace160K (IR50)</td>
+                  <td>70.37</td>
+                  <td>61.51</td>
+                  <td>92.50</td>
+                </tr>
+                <tr>
+                  <td>WebFace160K (IR101)</td>
+                  <td>72.56</td>
+                  <td>62.59</td>
+                  <td>93.32</td>
+                </tr>
+                <tr class="has-background-link-light">
+                  <td><strong>ScoreMix (ours)</strong></td>
+                  <td><strong>76.45</strong></td>
+                  <td><strong>63.09</strong></td>
+                  <td><strong>93.87</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom: 1.5rem; border-left: 4px solid #23d160; background-color: #f3fff6;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 2 — Embedding-aware pairing beats condition heuristics</p>
+            <p class="content">
+              Selecting identities that are distant in the discriminator embedding space gives a clear boost compared with choosing based on condition-space proximity, reinforcing that the pairing strategy should be recognition-driven.
+            </p>
+          </div>
+          <div class="column is-6">
+            <table class="table is-bordered is-fullwidth is-narrow" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th>IJB-C @1e-6</th>
+                  <th>Avg</th>
+				<th>Δ Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Close Embedding (pairs)</td>
+                  <td>71.86</td>
+                  <td>64.92</td>
+		  <td rowspan="2" class="has-text-centered has-background-success-light"><strong>+2.52</strong></td>
+                </tr>
+                <tr class="has-background-success-light">
+                  <td><strong>Dist Embedding (pairs)</strong></td>
+                  <td><strong>78.62</strong></td>
+                  <td><strong>67.44</strong></td>
+                </tr>
+                <tr>
+                  <td>Close Condition (pairs)</td>
+                  <td>74.43</td>
+                  <td>66.84</td>
+		  <td rowspan="2" class="has-text-centered">+0.11</td>
+                </tr>
+                <tr>
+                  <td>Dist Condition (pairs)</td>
+                  <td>76.97</td>
+                  <td>66.95</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom: 1.5rem; border-left: 4px solid #ff851b; background-color: #fff4ec;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 3 — Freezing discriminative features breaks the generator</p>
+            <p class="content">
+              Replacing learned condition vectors with the discriminator&rsquo;s class-centers causes the diffusion model to collapse. Training diverges quickly and produces unusable samples, so ScoreMix keeps the conditioning module learnable.
+            </p>
+          </div>
+          <div class="column is-6">
+            <table class="table is-fullwidth is-narrow" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Condition Strategy</th>
+                  <th>Outcome</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Learned conditions (ScoreMix)</td>
+                  <td>Stable training, high-fidelity mixed samples</td>
+                </tr>
+                <tr class="has-background-danger-light">
+                  <td><strong>Frozen discriminator centers</strong></td>
+                  <td><strong>Training diverges &mdash; generator fails to converge</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom: 1.5rem; border-left: 4px solid #ffdd57; background-color: #fffbea;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 4 — Pairs outperform triplets (and quads)</p>
+            <p class="content">
+              Exhaustive $m$-plet searches revealed that moving beyond two classes does not buy extra recognition accuracy, even with GPU-accelerated mining. ScoreMix sticks with pairs for the best trade-off.
+            </p>
+          </div>
+          <div class="column is-6">
+            <table class="table is-bordered is-fullwidth is-narrow" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Mixing Setup</th>
+                  <th>IJB-C @1e-6</th>
+                  <th>Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="has-background-warning-light">
+                  <td><strong>Pairs (Dist Embedding)</strong></td>
+                  <td><strong>78.62</strong></td>
+                  <td><strong>67.44</strong></td>
+                </tr>
+                <tr>
+                  <td>Triplets (Sum Max)</td>
+                  <td>74.36</td>
+                  <td>65.69</td>
+                </tr>
+                <tr>
+                  <td>Triplets (Sum Min)</td>
+                  <td>73.11</td>
+                  <td>64.62</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="margin-bottom: 1.5rem; border-left: 4px solid #209cee; background-color: #f0f7ff;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 5 — Condition space remains weakly aligned</p>
+            <p class="content">
+              Centered Kernel Alignment (CKA) shows that the diffusion model&rsquo;s condition vectors never reach the geometry shared by multiple recognition backbones. This limited alignment explains why condition-space heuristics trail embedding-aware strategies.
+            </p>
+          </div>
+          <div class="column is-6 has-text-centered">
+            <img src="static/images/scoremix_cka_alignment.png" alt="CKA alignment between condition space and recognition backbones" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);">
+            <p class="is-size-7 has-text-grey" style="margin-top: 0.5rem;">
+              CKA curves: alignment between condition space and FR backbones (solid lines) stays below inter-backbone alignment (dashed), highlighting the geometric gap.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="border-left: 4px solid #ff3860; background-color: #fff5f7;">
+        <div class="columns is-variable is-5 is-vcentered">
+          <div class="column is-6">
+            <p class="has-text-weight-semibold">Takeaway 6 — Forcing alignment hurts performance</p>
+            <p class="content">
+              Pushing generator outputs toward the discriminator&rsquo;s class centers lowers verification accuracy. Alignment loss decreases, but intra-class similarity spikes, implying over-constrained synthetic samples.
+            </p>
+          </div>
+          <div class="column is-6">
+            <div class="columns is-multiline is-variable is-2">
+              <div class="column is-12">
+                <table class="table is-bordered is-narrow is-fullwidth" style="font-size: 0.85rem;">
+                  <thead>
+                    <tr>
+                      <th>Training Data</th>
+                      <th>IJB-C @1e-6</th>
+                      <th>Avg</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>ScoreMix Repro (synthetic only)</td>
+                      <td>54.66</td>
+                      <td>92.47</td>
+                    </tr>
+                    <tr class="has-background-danger-light">
+                      <td><strong>ScoreMix Repro + alignment</strong></td>
+                      <td><strong>45.79</strong></td>
+                      <td><strong>46.55</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="column is-6 has-text-centered">
+                <img src="static/images/scoremix_align_loss.png" alt="Alignment loss to discriminator centers before and after regularization" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);">
+                <p class="is-size-7 has-text-grey" style="margin-top: 0.35rem;">Alignment loss drops with regularization, yet the resulting generator underperforms.</p>
+              </div>
+              <div class="column is-6 has-text-centered">
+                <img src="static/images/scoremix_align_ics.png" alt="Intra-class similarity after enforcing alignment" style="max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);">
+                <p class="is-size-7 has-text-grey" style="margin-top: 0.35rem;">Intra-class similarity shoots up, signaling over-constrained synthetic samples.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<!-- Image carousel -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_4714_2658.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix grid sweeping alpha and beta for identities 4714 and 2658"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_6840_4084.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix grid sweeping alpha and beta for identities 6840 and 4084"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_7876_7388.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix grid sweeping alpha and beta for identities 7876 and 7388"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8041_142.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix grid sweeping alpha and beta for identities 8041 and 142"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8181_6228.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix grid sweeping alpha and beta for identities 8181 and 6228"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_4714_2658_sweep1.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 4714 and 2658 with alpha < beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_6840_4084_sweep1.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 6840 and 4084 with alpha < beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_7876_7388_sweep1.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 7876 and 7388 with alpha < beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8041_142_sweep1.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 8041 and 142 with alpha < beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8181_6228_sweep1.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 8181 and 6228 with alpha < beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_4714_2658_sweep6.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 4714 and 2658 with alpha > beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_6840_4084_sweep6.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 6840 and 4084 with alpha > beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_7876_7388_sweep6.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 7876 and 7388 with alpha > beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8041_142_sweep6.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 8041 and 142 with alpha > beta weighting"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_ids_8181_6228_sweep6.png" style="max-height:360px; width:auto; margin:0 auto;" alt="ScoreMix samples for identities 8181 and 6228 with alpha > beta weighting"/>
+        </div>
+      </div>
+      <h2 class="subtitle has-text-centered">
+        Glide through the carousel to watch ScoreMix sweep the convex weights (alpha, beta) for each identity pair&mdash;every grid reveals how the synthesis leans toward one source as the guidance balance shifts.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End image carousel -->
+
+
+<section class="hero is-small is-white">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title has-text-centered">Qualitative ScoreMix Samples</h2>
+      <p class="subtitle has-text-centered" style="max-width: 720px; margin: 0 auto 1.5rem;">
+        Each grid shows original identities (outer columns), generator reproductions, and the ScoreMix augmentation in the center column—highlighting how subtle, identity-preserving cues are introduced.
+      </p>
+      <div id="qual-carousel" class="carousel qualitative-carousel">
+        <div class="carcon">
+          <img src="static/images/scoremix_sample_pair.png" style="max-height:360px; width:auto; margin:0 auto;" alt="Qualitative comparison of ScoreMix augmentation samples for identities 9597 and 3439"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_qual_4566_2325.png" style="max-height:360px; width:auto; margin:0 auto;" alt="Qualitative comparison of ScoreMix augmentation samples for identities 4566 and 2325"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_qual_6934_2767.png" style="max-height:360px; width:auto; margin:0 auto;" alt="Qualitative comparison of ScoreMix augmentation samples for identities 6934 and 2767"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_qual_8430_5412.png" style="max-height:360px; width:auto; margin:0 auto;" alt="Qualitative comparison of ScoreMix augmentation samples for identities 8430 and 5412"/>
+        </div>
+        <div class="carcon">
+          <img src="static/images/scoremix_qual_8476_2790.png" style="max-height:360px; width:auto; margin:0 auto;" alt="Qualitative comparison of ScoreMix augmentation samples for identities 8476 and 2790"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-small is-light">
+  <div class="container is-max-desktop ">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+
+        <br></br>
+        <h2 class="title is-3">Face Recognition Experiments</h2>
+        <div class="content has-text-justified">
+            To see how this story plays out empirically, we train ScoreMix on WebFace160K, a 160K-image subset of WebFace4M with roughly ten thousand identities, and evaluate the resulting discriminators on eight public face recognition (FR) benchmarks. All models share the same IR50 backbone (with an IR101 variant shown for comparison) and ArcFace head; synthetic datasets are generated solely from the diffusion model trained on WebFace160K.
+        </div>
+        <div class="table-container">
+          <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th><span title="Synthetic images used for training">Synthetic</span></th>
+                <th><span title="Real images used for training">Real</span></th>
+                <th>IJB-B @1e-6</th>
+                <th>IJB-C @1e-6</th>
+                <th>TinyFace Rank-1</th>
+                <th>Avg-H</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WebFace160K (IR50)</td>
+                <td>0</td>
+                <td>0.16M</td>
+                <td>32.13</td>
+                <td>70.37</td>
+                <td>61.51</td>
+                <td>92.50</td>
+              </tr>
+              <tr>
+                <td>WebFace160K (IR101)</td>
+                <td>0</td>
+                <td>0.16M</td>
+                <td>34.84</td>
+                <td>72.56</td>
+                <td>62.59</td>
+                <td>93.32</td>
+              </tr>
+              <tr>
+                <td>AugGen</td>
+                <td>0.20M</td>
+                <td>0.16M</td>
+                <td>34.83</td>
+                <td>75.02</td>
+                <td>61.41</td>
+                <td>93.78</td>
+              </tr>
+              <tr class="is-selected">
+                <td><strong>ScoreMix (ours)</strong></td>
+                <td>0.20M</td>
+                <td>0.16M</td>
+                <td><strong>35.95</strong></td>
+                <td><strong>76.45</strong></td>
+                <td><strong>63.09</strong></td>
+                <td><strong>93.87</strong></td>
+              </tr>
+              <tr>
+                <td>ScoreMix Repro (synthetic only)</td>
+                <td>0.20M</td>
+                <td>0</td>
+                <td>28.15</td>
+                <td>54.66</td>
+                <td>56.38</td>
+                <td>92.47</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="content has-text-justified">
+            ScoreMix delivers the highest verification accuracy among self-contained approaches, surpassing strong baselines and even the larger IR101 architecture trained on real data alone. Synthetic-only training remains competitive, highlighting the fidelity of the mixed samples, while combining ScoreMix augmentations with real data yields the best overall results across both high-quality and challenging FR benchmarks.
+        </div>
+       <br></br>
+       
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-small is-dark">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Dataset</h2>
+      <p>
+        To make the experiments reproducible end-to-end, ScoreMix synthetic datasets generated from WebFace160K will be released soon.
+      </p>
+      <p>
+        Planned packaging includes MXNet `rec` files, image-folder tarballs (compatible with ImageTar data loaders), and an uncompressed folder hierarchy for quick inspection.  
+      </p>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Paper poster -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title">Paper</h2>
+
+      <iframe  src="static/scoremix.pdf" width="100%" height="400">
+          </iframe>
+        
+      </div>
+    </div>
+  </section>
+<!--End paper poster -->
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>
+      @article{rahimi2025scoremix,
+        title={ScoreMix: Synthetic Data Generation by Score Composition in Diffusion Models Improves Recognition}, 
+        author={Parsa Rahimi and Sebastien Marcel},
+        year={2025},
+        eprint={2506.10226},
+        archivePrefix={arXiv},
+        primaryClass={cs.CV},
+        url={https://arxiv.org/abs/2506.10226}, 
+    }
+    </code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <!-- <a class="icon-link"
+         href="./static/paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a> -->
+      <a class="icon-link" href="https://github.com/parsa-ra" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            As usual,
+            this page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page. ;)
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
